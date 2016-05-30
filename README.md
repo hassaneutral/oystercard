@@ -1,6 +1,6 @@
-## Week 2 Challenge: oystercard
+# Week 2 Challenge: oystercard
 
-# User Stories
+## User Stories
 
 ```
 In order to use public transport
@@ -50,5 +50,4 @@ I need a penalty charge deducted if I fail to touch in or out
 In order to be charged the correct amount
 As a customer
 I need to have the correct fare calculated
-
 ```
