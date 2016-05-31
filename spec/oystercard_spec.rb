@@ -2,11 +2,18 @@ require 'oystercard'
 
 describe Oystercard do
   subject(:oystercard) {described_class.new}
-    
+
   let(:station){double(:station)}
+  let(:station2){double(:station)}
   let(:min_fare){described_class::MIN_FARE}
   let(:min_balance){described_class::MIN_BALANCE}
+  let(:journey){{entry_station: station, exit_station: station2}}
 
+  describe '#Initialize' do
+    it 'has an empty list of journeys by default' do
+      expect(oystercard.journey_log).to eq []
+    end
+  end
 
   describe '#balance' do
 
@@ -40,7 +47,7 @@ describe Oystercard do
     it 'reports when oystercard is not in use' do
       allow(oystercard).to receive(:balance) { 2 }
       oystercard.touch_in(station)
-      oystercard.touch_out
+      oystercard.touch_out(station2)
       expect(oystercard.in_journey?).to eq false
     end
 
@@ -55,27 +62,23 @@ describe Oystercard do
     it "does not let through a card with a balance lesser than the minimum balance " do
       expect{oystercard.touch_in(station)}.to raise_error('Insufficient balance.')
     end
-
-    it 'expects the card to remember the entry station' do
-      oystercard.top_up(min_balance)
-      oystercard.touch_in(station)
-      expect(oystercard.entry_station).to eq station
-    end
   end
+
 
   describe '#touch_out' do
     it "deducts fare when touching out" do
       oystercard.top_up(min_balance)
       oystercard.touch_in(station)
-      expect{oystercard.touch_out}.to change{oystercard.balance}.by -min_fare
+      expect{oystercard.touch_out(station2)}.to change{oystercard.balance}.by -min_fare
     end
 
-    it "expects the card to forget about the entry station" do
+    it "records current journey" do
       oystercard.top_up(min_balance)
       oystercard.touch_in(station)
-      oystercard.touch_out
-      expect(oystercard.entry_station).to be_nil
+      oystercard.touch_out(station2)
+      oystercard.journey_log.last.should include(journey)
     end
+
   end
 end
 
