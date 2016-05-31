@@ -34,11 +34,13 @@ describe Oystercard do
 
   describe '#in_journey?' do
     it 'reports when oystercard is in use' do
+      allow(oystercard).to receive(:balance) { 2 }
       oystercard.touch_in
       expect(oystercard.in_journey?).to eq true
     end
 
     it 'reports when oystercard is not in use' do
+      allow(oystercard).to receive(:balance) { 2 }
       oystercard.touch_in
       oystercard.touch_out
       expect(oystercard.in_journey?).to eq false
@@ -47,6 +49,12 @@ describe Oystercard do
     it 'reports initialized oystercard not in use' do
       expect(oystercard.in_journey?).to eq false
     end
+
   end
 
+  describe '#touch_in' do
+    it "does not let through a card with a balance lesser than #{Oystercard::MIN_BALANCE}" do
+      expect{oystercard.touch_in}.to raise_error('Insufficient balance.')
+    end
+  end
 end
