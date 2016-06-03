@@ -11,7 +11,7 @@ describe JourneyLog do
 
   describe '#initialize' do
     it 'checks that we have a journey variable' do
-      expect(subject.log).to eq([])
+      expect(subject.journeys).to eq([])
     end
   
     it 'checks journey_log is initialized out of journey' do
@@ -21,7 +21,7 @@ describe JourneyLog do
  
   describe '#begin' do
     it 'creates a new log' do
-      expect{journey_log.begin(station1)}.to change{journey_log.log.count}.by(1) 
+      expect{journey_log.begin(station1)}.to change{journey_log.journeys.count}.by(1) 
     end
   end
 
