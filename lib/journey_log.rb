@@ -1,7 +1,5 @@
 class JourneyLog
 
-  attr_reader :log
-
   def initialize(log_type)
     @log = []
     @log_type = log_type
@@ -20,13 +18,16 @@ class JourneyLog
   end
 
   def in_journey?
-    p "==================="
-    p log.empty?
-    p log.last
     log.empty? ? false : !log.last.complete?
   end
 
+  def journeys
+    log
+  end
+
   private
+
+  attr_reader :log
 
   def new_log(station_object=nil)
     new = @log_type.new(station_object)

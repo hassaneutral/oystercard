@@ -7,8 +7,8 @@ describe Oystercard do
   let(:max_bal) { Oystercard::MAXIMUM_BALANCE }
   let(:min_bal) { Oystercard::MINIMUM_BALANCE }
   
-  let(:station1) {double :station, :name => "Bank"}
-  let(:station2) {double :station, :name => "Poplar"}
+  let(:station1) {double :station, :name => "Bank", :zone => 1}
+  let(:station2) {double :station, :name => "Poplar", :zone => 2}
 
   context 'upon initialization' do
 
@@ -46,6 +46,12 @@ describe Oystercard do
       expect{oystercard.touch_in(station1)}.to raise_error(message)
     end
 
+    it 'deducts penalty fare if touching in w/out touching out previous journey' do
+      oystercard.top_up(10)
+      oystercard.touch_in(station1)
+      expect{oystercard.touch_in(station2)}.to change{oystercard.balance}
+    end
+
   end
 
   context '#touch_out' do
@@ -53,12 +59,7 @@ describe Oystercard do
     it 'responds to touch_out method with one argument' do
       expect(oystercard).to respond_to(:touch_out).with(1).argument
     end
-
-    it 'checks oystercard is in a journey before touching out' do
-      message = "Not yet started journey"
-      expect{oystercard.touch_out(station2)}.to raise_error(message)
-    end
-
+    
     it 'changes the balance' do
       oystercard.top_up(10)
       oystercard.touch_in(station1)

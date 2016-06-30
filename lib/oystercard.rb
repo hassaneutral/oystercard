@@ -18,15 +18,14 @@ class Oystercard
   end
 
   def touch_in(station_object)
-    raise "Already in a journey" if journeys.in_journey?
     raise "Not enough funds" if balance < MINIMUM_BALANCE
+    deduct(journeys.journeys.last.fare) if journeys.in_journey?
     journeys.begin(station_object)
   end
 
   def touch_out(station_object)
-    raise "Not yet started journey" unless journeys.in_journey?
     journeys.finish(station_object)
-    deduct(journeys.log.last.fare)
+    deduct(journeys.journeys.last.fare)
   end
 
 private
